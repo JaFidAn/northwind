@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
+import { ToastrService } from 'ngx-toastr'
 import { Product } from 'src/app/models/product'
-import { ProductReponseModel } from 'src/app/models/productResponseModel'
-import { ProductService } from 'src/app/services/product.service';
+import { CartService } from 'src/app/services/cart.service'
+import { ProductService } from 'src/app/services/product.service'
 
 @Component({
   selector: 'app-product',
@@ -9,19 +11,45 @@ import { ProductService } from 'src/app/services/product.service';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
-  products: Product[] = [];
-  dataLoaded = false;
-  
-  constructor(private productService:ProductService) {}
+  products: Product[] = []
+  dataLoaded = false
+  filterText = ''
+
+  constructor(
+    private productService: ProductService,
+    private activatedRoute: ActivatedRoute,
+    private toastrService: ToastrService,
+    private cartService: CartService,
+  ) {}
 
   ngOnInit(): void {
-    this.getProducts();
+    this.activatedRoute.params.subscribe((params) => {
+      if (params['categoryId']) {
+        this.getProductsByCategory(params['categoryId'])
+      } else {
+        this.getProducts()
+      }
+    })
   }
 
   getProducts() {
-    this.productService.getProducts().subscribe((response)=>{
+    this.productService.getProducts().subscribe((response) => {
       this.products = response.data
-      this.dataLoaded=true;
+      this.dataLoaded = true
     })
+  }
+
+  getProductsByCategory(categoryId: number) {
+    this.productService
+      .getProductsByCategory(categoryId)
+      .subscribe((response) => {
+        this.products = response.data
+        this.dataLoaded = true
+      })
+  }
+
+  addToCart(product: Product) {
+    this.toastrService.success('Səbətə yerləşdi', product.productName)
+    this.cartService.addToCart(product)
   }
 }
