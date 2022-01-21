@@ -19,13 +19,11 @@ export class ProductService {
     return this.httpClient.get<ListResponseModel<Product>>(newPath)
    
   }
+  
 
   getProductsByCategory(categoryId:number):Observable<ListResponseModel<Product>> {
-    
-    let newPath = this.apiUrl+"products/getbycategory?categoryId="+categoryId
-    return this.httpClient.get<ListResponseModel<Product>>(newPath)
-
-    
+    let newPath = this.apiUrl + "products/getbycategory?categoryId="+categoryId
+    return this.httpClient.get<ListResponseModel<Product>>(newPath);
   }
 
   add(product:Product):Observable<ResponseModel>{

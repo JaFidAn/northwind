@@ -40,11 +40,10 @@ export class ProductComponent implements OnInit {
   }
 
   getProductsByCategory(categoryId: number) {
-    this.productService
-      .getProductsByCategory(categoryId)
-      .subscribe((response) => {
+    this.productService.getProductsByCategory(categoryId).subscribe((response) => {
         this.products = response.data
         this.dataLoaded = true
+        console.log(categoryId)
       })
   }
 
